@@ -123,12 +123,16 @@ Open `dashboard.html` and try the "Upload log" panel with `examples/sample_rollo
 ├── scripts/check_severity.py  # severity gate used by the Action
 ├── dashboard.html              # browser-based visual auditor
 ├── examples/
-│   ├── sample_rollout.jsonl
-│   └── sample_generic.json
+│   ├── sample_rollout.jsonl    # used to DESIGN the rules -- not for evaluation
+│   ├── sample_generic.json
+│   └── eval_set/                # held-out set, used to MEASURE the rules
+│       ├── labels.json
+│       └── *.json
 ├── tests/
 │   ├── test_detectors.py      # course-baseline tests
 │   └── test_package.py        # adapter + CLI tests
 ├── run_baseline.py            # standalone script (course submission entry point)
+├── evaluate.py                 # precision/recall against examples/eval_set
 ├── watch_live.py               # standalone script, same logic as `sfa watch`
 ├── llm_explain.py               # standalone script, same logic as `sfa explain`
 └── pyproject.toml
@@ -152,9 +156,37 @@ repeats don't trigger the retry rule, three do). CI runs these on every push.
 
 ## Evaluation
 
-*(fill in once you've hand-labeled a set of real runs)*
+```bash
+python evaluate.py --logs-dir examples/eval_set --labels examples/eval_set/labels.json
+```
 
-Precision: `_.__` · Recall: `_.__` — measured against `N` hand-labeled runs.
+**Precision: 0.50 · Recall: 0.50 · F1: 0.50** — measured against a 4-log
+held-out set (`examples/eval_set/`), hand-labeled independently of the logs
+used to design the rules (`examples/sample_rollout.jsonl` was used *while
+building* the detector, so evaluating against it again would be circular —
+this set was written afterward, specifically to include cases the rules
+get wrong).
+
+What that 0.50/0.50 is made of, concretely:
+- **True positive**: a hallucinated-path case in a different context
+  (`ghost_file.json`) — correctly caught.
+- **False negative** (`vocab_miss.json`): a real test failure where the
+  agent's follow-up ("Looks good, moving on") doesn't contain any of the
+  exact success words the regex checks for — missed.
+- **False positive** (`transient_recovery.json`): a command that failed,
+  retried, and *actually succeeded* within one tool output — the regex
+  sees "failed" + "completed successfully" and can't tell that's a
+  legitimate recovery, not a silent failure.
+
+That false positive in particular points at the rule engine's real
+weakness: it judges each tool call as a single unit and can't distinguish
+"failed then recovered in the same call" from "failed and the agent didn't
+notice." A semantic pass (see `sfa explain` / `llm_explain.py`) is the
+planned fix.
+
+To grow this set: add a new log + its ground truth to `examples/eval_set/labels.json`
+whenever you run the auditor against a real session, so the number keeps
+being measured against fresh cases rather than the same four forever.
 
 ## Limitations
 

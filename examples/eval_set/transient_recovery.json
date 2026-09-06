@@ -1,0 +1,3 @@
+[
+  {"tool":"run_command","args":"deploy.sh","output":"Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded.","textAfter":"The command completed successfully after a retry."}
+]

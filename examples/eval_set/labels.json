@@ -1,0 +1,6 @@
+{
+  "clean_run.json": {},
+  "vocab_miss.json": {"1": true},
+  "transient_recovery.json": {"1": false},
+  "ghost_file.json": {"1": true}
+}
