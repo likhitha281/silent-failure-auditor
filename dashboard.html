@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Auditor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#032D60;
+  --blue:#0176D3;
+  --blue-dark:#014486;
+  --blue-tint:#F3F9FD;
+  --bg:#F3F3F3;
+  --white:#FFFFFF;
+  --border:#DDDBDA;
+  --text:#181818;
+  --text-body:#3E3E3C;
+  --text-muted:#706E6B;
+  --success:#2E844A;
+  --success-bg:#E9F6ED;
+  --warning:#B85C00;
+  --warning-bg:#FFF3E0;
+  --error:#BA0517;
+  --error-bg:#FDEEEE;
+  --mono:'IBM Plex Mono', monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --radius:4px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text-body);font-family:var(--sans);font-size:14px;}
+button{font-family:var(--sans);}
+
+/* ---------- Global header ---------- */
+.gheader{background:var(--navy);color:#fff;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.gheader-left{display:flex;align-items:center;gap:10px;}
+.gh-icon{width:28px;height:28px;border-radius:6px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.gh-name{font-weight:600;font-size:15px;letter-spacing:-0.01em;}
+.gh-crumb{color:#B6C8E0;font-size:12.5px;margin-left:14px;padding-left:14px;border-left:1px solid rgba(255,255,255,.25);}
+.btn{border-radius:var(--radius);font-size:13px;font-weight:600;padding:7px 14px;cursor:pointer;border:1px solid transparent;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue-dark);}
+.btn-outline{background:#fff;color:var(--blue);border-color:var(--blue);}
+.btn-outline:hover{background:var(--blue-tint);}
+.btn-neutral{background:#fff;color:var(--text-body);border-color:var(--border);}
+
+/* ---------- Upload panel ---------- */
+.upload-panel{background:var(--white);border-bottom:1px solid var(--border);padding:18px 24px;display:none;}
+.upload-panel.open{display:block;}
+.up-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1100px;}
+.up-col h4{margin:0 0 8px 0;font-size:12.5px;color:var(--text-muted);font-weight:600;}
+.up-dropzone{border:2px dashed var(--border);border-radius:var(--radius);padding:22px;text-align:center;color:var(--text-muted);font-size:12.5px;}
+.up-dropzone input{display:block;margin:10px auto 0 auto;}
+textarea#pasteBox{width:100%;height:110px;border:1px solid var(--border);border-radius:var(--radius);padding:10px;font-family:var(--mono);font-size:11.5px;resize:vertical;}
+.up-actions{display:flex;gap:8px;margin-top:12px;align-items:center;}
+.up-format-link{font-size:12px;color:var(--blue);cursor:pointer;margin-left:auto;text-decoration:none;}
+.format-guide{display:none;margin-top:14px;border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--bg);font-size:12px;color:var(--text-body);}
+.format-guide.open{display:block;}
+.format-guide code{background:#fff;border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:11px;}
+.format-guide pre{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:10px;font-family:var(--mono);font-size:11px;overflow:auto;}
+.error-banner{margin-top:12px;background:var(--error-bg);border:1px solid #F2C0C0;color:var(--error);border-radius:var(--radius);padding:10px 12px;font-size:12.5px;}
+
+/* ---------- App layout ---------- */
+.app{display:flex;flex-direction:column;min-height:calc(100vh - 52px);}
+.record-header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 24px 0 24px;}
+.rh-path{font-size:11.5px;color:var(--text-muted);margin-bottom:4px;}
+.rh-title{font-size:19px;font-weight:700;color:var(--text);margin:0 0 12px 0;}
+.highlights{display:flex;border-top:1px solid var(--border);}
+.hl-tile{flex:1;padding:12px 18px;border-right:1px solid var(--border);}
+.hl-tile:last-child{border-right:none;}
+.hl-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.hl-value{font-size:17px;font-weight:700;color:var(--text);}
+.hl-value.err{color:var(--error);}
+.hl-value.warn{color:var(--warning);}
+.hl-value.ok{color:var(--success);}
+
+.body-split{display:flex;flex:1;min-height:0;padding:16px 24px;gap:16px;}
+
+/* ---------- Sidebar list view ---------- */
+.listview{width:270px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);height:fit-content;}
+.lv-header{padding:10px 14px;border-bottom:1px solid var(--border);background:#FAFAF9;font-size:12.5px;font-weight:600;color:var(--text-body);border-radius:var(--radius) var(--radius) 0 0;}
+.lv-row{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;position:relative;border-left:3px solid transparent;}
+.lv-row:last-child{border-bottom:none;}
+.lv-row:hover{background:var(--blue-tint);}
+.lv-row.active{background:var(--blue-tint);border-left-color:var(--blue);}
+.lv-row .lv-name{font-size:13px;font-weight:600;color:var(--blue-dark);}
+.lv-row .lv-sub{font-family:var(--mono);font-size:10.5px;color:var(--text-muted);margin-top:2px;}
+.badge{display:inline-block;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:10px;margin-top:6px;}
+.badge.clean{background:var(--success-bg);color:var(--success);}
+.badge.flagged{background:var(--error-bg);color:var(--error);}
+
+/* ---------- Main table card ---------- */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);flex:1;display:flex;flex-direction:column;min-width:0;}
+.card-toolbar{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.filter-chip{font-size:12px;font-weight:600;padding:5px 11px;border-radius:14px;border:1px solid var(--border);color:var(--text-body);cursor:pointer;background:#fff;}
+.filter-chip.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+.table-wrap{flex:1;overflow:auto;}
+table.steps{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.steps thead th{position:sticky;top:0;background:#FAFAF9;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--text-muted);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--border);}
+table.steps tbody td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top;}
+table.steps tbody tr:hover{background:var(--blue-tint);cursor:default;}
+table.steps tbody tr.clickable{cursor:pointer;}
+.mono{font-family:var(--mono);}
+.tool-name{font-family:var(--mono);font-weight:600;color:var(--text);}
+.arg-text{color:var(--text-muted);}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:10px;}
+.pill.ok{background:var(--success-bg);color:var(--success);}
+.pill.high{background:var(--error-bg);color:var(--error);}
+.pill.med{background:var(--warning-bg);color:var(--warning);}
+.empty-state{padding:40px;text-align:center;color:var(--text-muted);font-size:13px;}
+
+/* ---------- Inspector slide panel ---------- */
+.inspector{width:0;overflow:hidden;transition:width 200ms ease;}
+.inspector.open{width:360px;}
+.insp-card{width:360px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);height:100%;overflow:auto;}
+.insp-head{background:var(--navy);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:flex-start;border-radius:var(--radius) var(--radius) 0 0;}
+.insp-head .kick{font-size:11px;color:#B6C8E0;font-family:var(--mono);}
+.insp-head .title{font-size:14px;font-weight:600;margin-top:2px;}
+.insp-close{background:none;border:none;color:#fff;cursor:pointer;font-size:16px;line-height:1;}
+.insp-body{padding:16px;}
+.insp-sev{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;margin-bottom:14px;}
+.insp-sev.high{background:var(--error-bg);color:var(--error);}
+.insp-sev.med{background:var(--warning-bg);color:var(--warning);}
+.insp-block{margin-bottom:14px;}
+.insp-block h4{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--text-muted);margin:0 0 6px 0;}
+.insp-code{font-family:var(--mono);font-size:11px;background:#FAFAF9;border:1px solid var(--border);border-radius:var(--radius);padding:9px 10px;line-height:1.6;white-space:pre-wrap;color:var(--text-body);}
+.insp-verdict{font-size:12.5px;line-height:1.55;color:var(--text-body);}
+</style>
+</head>
+<body>
+
+<div class="gheader">
+  <div class="gheader-left">
+    <div class="gh-icon">A</div>
+    <div class="gh-name">Auditor</div>
+    <div class="gh-crumb" id="crumb">Sample data</div>
+  </div>
+  <button class="btn btn-primary" id="uploadToggle">Upload log</button>
+</div>
+
+<div class="upload-panel" id="uploadPanel">
+  <div class="up-grid">
+    <div class="up-col">
+      <h4>Upload a file</h4>
+      <div class="up-dropzone">
+        Drop a .json / .jsonl log file, or choose one below.
+        <input type="file" id="fileInput" accept=".json,.jsonl,.txt">
+      </div>
+    </div>
+    <div class="up-col">
+      <h4>Or paste log JSON</h4>
+      <textarea id="pasteBox" placeholder='[{"tool":"run_tests","args":"pytest","output":"...","textAfter":"..."}, ...]'></textarea>
+    </div>
+  </div>
+  <div class="up-actions">
+    <button class="btn btn-primary" id="analyzeBtn">Run auditor</button>
+    <button class="btn btn-neutral" id="cancelUpload">Cancel</button>
+    <a class="up-format-link" id="formatLink">What formats are supported?</a>
+  </div>
+  <div id="errorBanner" class="error-banner" style="display:none;"></div>
+  <div class="format-guide" id="formatGuide">
+    Three shapes are recognized automatically:
+    <ul>
+      <li><b>Generic event list</b> — an array of <code>{tool, args, output, textAfter}</code> objects. Easiest to produce from any custom wrapper.</li>
+      <li><b>Anthropic/OpenAI-style transcript</b> — an object with a <code>messages</code> array containing <code>tool_use</code> / <code>tool_result</code> content blocks.</li>
+      <li><b>Codex CLI rollout</b> — paste the raw contents of a <code>rollout-*.jsonl</code> file from <code>~/.codex/sessions/</code>. Lines are <code>{timestamp, type, payload}</code>, with tool calls under <code>type:"response_item"</code> linked by <code>payload.call_id</code>.</li>
+    </ul>
+    <pre>[
+  {"tool":"run_tests","args":"pytest tests/","output":"1 failed, 4 passed\nFAILED test_x","textAfter":"All tests pass now."},
+  {"tool":"edit_file","args":"src/app.py","output":"12 lines changed","textAfter":"Updated the handler."}
+]</pre>
+    <button class="btn btn-outline" id="loadExampleBtn" style="margin-top:6px;">Paste this example</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="record-header">
+    <div class="rh-path" id="rhPath">Run</div>
+    <p class="rh-title" id="rhTitle">—</p>
+    <div class="highlights" id="highlights"></div>
+  </div>
+
+  <div class="body-split">
+    <div class="listview">
+      <div class="lv-header">Runs</div>
+      <div id="runList"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-toolbar" id="filters">
+        <button class="filter-chip active" data-f="all">All steps</button>
+        <button class="filter-chip" data-f="flag">Flagged only</button>
+      </div>
+      <div class="table-wrap">
+        <table class="steps">
+          <thead><tr><th style="width:34px;">#</th><th style="width:64px;">Time</th><th style="width:150px;">Tool</th><th>Details</th><th style="width:120px;">Status</th></tr></thead>
+          <tbody id="eventBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="inspector" id="inspector"></div>
+  </div>
+</div>
+
+<script>
+/* ---------------- Detection engine ---------------- */
+const ERROR_RE = /\b(error|exception|traceback|failed|failure|denied|non-zero|timed?\s?out|refused|connectionerror)\b/i;
+const SUCCESS_RE = /\b(done|success(ful|fully)?|passed|passing|fixed|completed|resolved|works now|verified|no issues|all good)\b|✓/i;
+const NOTFOUND_RE = /\benoent\b|\bno such file\b|\bfile does not exist\b|\bpath does not exist\b/i;
+const NOOP_RE = /\b0 (hunks|changes|files changed)\b|\bno changes (made|applied)\b|\bnothing to (commit|apply)\b|\btarget text not found\b|\balready up to date\b|\bunmodified\b/i;
+const PATH_RE = /\b[\w.\-\/]+\.(py|js|ts|tsx|jsx|md|json|yaml|yml|txt|cfg|toml|go|rs|java|rb|c|cpp|h)\b/g;
+const EDIT_TOOLS_RE = /edit_file|write_file|apply_patch|^patch$|str_replace/i;
+
+function truncate(s, n){ s = s || ""; return s.length > n ? s.slice(0,n) + "…" : s; }
+function firstMatch(s, re){ const m = (s||"").match(re); return m ? m[0] : ""; }
+function sameCall(a,b){ return a.tool === b.tool && (a.args||"") === (b.args||""); }
+
+function runDetectors(steps){
+  steps.forEach(s => { s.status = undefined; s.type = undefined; s.severity = undefined; s.verdictAuto = undefined; });
+
+  // retry-loop: consecutive identical tool+args
+  let i = 0;
+  while(i < steps.length){
+    let j = i;
+    while(j+1 < steps.length && sameCall(steps[j+1], steps[i])) j++;
+    const runLen = j - i + 1;
+    if(runLen >= 3){
+      const s = steps[j];
+      s.status = "flag"; s.type = "retry"; s.severity = "med";
+      s.verdictAuto = "The same call (" + s.tool + " " + truncate(s.args,50) + ") was repeated " + runLen + " times in a row with no change in outcome, and the run then proceeds as if it had succeeded.";
+    }
+    i = j + 1;
+  }
+
+  const knownPaths = new Set();
+  steps.forEach(s => (s.args||"").match(PATH_RE)?.forEach(p => knownPaths.add(p)));
+
+  steps.forEach(s => {
+    if(s.status) return;
+    const out = s.output || "";
+    const claim = s.textAfter || "";
+    const hasError = ERROR_RE.test(out);
+    const claimsSuccess = SUCCESS_RE.test(claim);
+    const claimQuotesError = ERROR_RE.test(claim);
+
+    if(EDIT_TOOLS_RE.test(s.tool) && NOTFOUND_RE.test(out) && claimsSuccess){
+      s.status = "flag"; s.type = "hallucinated"; s.severity = "high";
+      s.verdictAuto = "The tool call for " + (s.args || "this path") + " returned \"" + firstMatch(out, NOTFOUND_RE) + "\", meaning the file was never actually reached — but the following message describes the edit as done.";
+      return;
+    }
+    if(NOOP_RE.test(out) && claimsSuccess){
+      s.status = "flag"; s.type = "noop"; s.severity = "med";
+      s.verdictAuto = "The tool reported no effective change (\"" + firstMatch(out, NOOP_RE) + "\"), but the following message describes the fix as applied.";
+      return;
+    }
+    if(hasError && claimsSuccess && !claimQuotesError){
+      s.status = "flag"; s.type = "misread"; s.severity = "high";
+      s.verdictAuto = "The tool output indicates a failure (\"" + firstMatch(out, ERROR_RE) + "\"), but the following message claims success and does not reference the failure.";
+      return;
+    }
+    const mentioned = claim.match(PATH_RE) || [];
+    const ghost = mentioned.find(p => !knownPaths.has(p));
+    if(ghost && claimsSuccess){
+      s.status = "flag"; s.type = "hallucinated"; s.severity = "high";
+      s.verdictAuto = "The message references " + ghost + ", which never appears as an argument to any tool call in this run.";
+      return;
+    }
+    s.status = "ok";
+  });
+  return steps;
+}
+
+/* ---------------- Normalizers ---------------- */
+function normalizeGenericEvents(data){
+  return data.map((it, idx) => ({
+    step: idx+1,
+    time: it.time || it.timestamp || "",
+    tool: it.tool || it.tool_name || it.name || "unknown",
+    args: typeof it.args === "string" ? it.args : (it.args ? JSON.stringify(it.args) : (it.arguments || "")),
+    output: typeof it.output === "string" ? it.output : (it.output ? JSON.stringify(it.output) : (it.result || "")),
+    textBefore: it.textBefore || it.agent_note || "",
+    textAfter: it.textAfter || it.assistant_text || it.note || ""
+  }));
+}
+
+function blockText(content){
+  if(typeof content === "string") return content;
+  if(Array.isArray(content)) return content.map(c => c.text || "").join(" ");
+  return "";
+}
+
+function normalizeMessagesTranscript(messages){
+  const steps = [];
+  const pending = {};
+  let textBuffer = "";
+  messages.forEach(msg => {
+    const blocks = Array.isArray(msg.content) ? msg.content : [{type:"text", text: msg.content}];
+    blocks.forEach(b => {
+      if(b.type === "text"){
+        textBuffer += (textBuffer ? " " : "") + (b.text || "");
+        if(steps.length) steps[steps.length-1].textAfter = (steps[steps.length-1].textAfter || "") + " " + (b.text || "");
+      } else if(b.type === "tool_use"){
+        const s = {
+          step: steps.length+1, time:"", tool: b.name,
+          args: typeof b.input === "string" ? b.input : JSON.stringify(b.input || {}),
+          output: "", textBefore: textBuffer, textAfter: ""
+        };
+        steps.push(s);
+        pending[b.id] = s;
+        textBuffer = "";
+      } else if(b.type === "tool_result"){
+        const target = pending[b.tool_use_id];
+        if(target) target.output = blockText(b.content);
+      }
+    });
+  });
+  return steps;
+}
+
+// Matches the real Codex CLI rollout format: ~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl
+// Each line is {timestamp, type, payload}. Tool calls and their outputs are both
+// type:"response_item" and are linked by a flat payload.call_id (not nested).
+function normalizeCodexRollout(lines){
+  const steps = [];
+  const pending = {};
+  let textBuffer = "";
+  lines.forEach(line => {
+    if(line.type !== "response_item" || !line.payload) return;
+    const p = line.payload;
+    if(p.type === "function_call"){
+      let argsStr = p.arguments;
+      try{ argsStr = JSON.stringify(JSON.parse(p.arguments)); }catch(e){}
+      const s = {
+        step: steps.length+1, time: line.timestamp || "",
+        tool: p.name || "unknown", args: argsStr || "",
+        output: "", textBefore: textBuffer, textAfter: ""
+      };
+      steps.push(s);
+      pending[p.call_id] = s;
+      textBuffer = "";
+    } else if(p.type === "function_call_output"){
+      const target = pending[p.call_id];
+      if(target) target.output = typeof p.output === "string" ? p.output : JSON.stringify(p.output || "");
+    } else if(p.type === "message"){
+      const text = blockText(p.content);
+      if(p.role === "assistant"){
+        textBuffer += (textBuffer ? " " : "") + text;
+        if(steps.length) steps[steps.length-1].textAfter = (steps[steps.length-1].textAfter || "") + " " + text;
+      }
+    }
+  });
+  return steps;
+}
+
+function normalize(raw){
+  let data;
+  try{ data = JSON.parse(raw); }
+  catch(e){
+    const lines = raw.split("\n").map(l=>l.trim()).filter(Boolean);
+    try{ data = lines.map(l=>JSON.parse(l)); }
+    catch(e2){ return {error:"That doesn't parse as JSON or JSON-lines. Check for a trailing comma or an unclosed bracket."}; }
+  }
+  if(data && Array.isArray(data.messages)) return {steps: normalizeMessagesTranscript(data.messages)};
+  if(Array.isArray(data)){
+    if(data.length && typeof data[0].type === "string" && data[0].payload !== undefined)
+      return {steps: normalizeCodexRollout(data)};
+    if(data.length && data[0].role && data[0].content)
+      return {steps: normalizeMessagesTranscript(data)};
+    if(data.length && (data[0].tool || data[0].tool_name || data[0].name))
+      return {steps: normalizeGenericEvents(data)};
+  }
+  return {error:"Unrecognized log shape — see \"What formats are supported?\" below."};
+}
+
+/* ---------------- Sample logs (raw, run through the same pipeline) ---------------- */
+const sampleLogs = {
+  "run-147": { repo:"jxnl/instructor", issue:"#812 · Fix regex validator schema mismatch", agent:"Codex CLI · gpt-5-codex", duration:"6m 42s",
+    raw: [
+      {tool:"read_file", args:"src/instructor/validator.py", output:"contents loaded (142 lines)", time:"00:04", textAfter:"Found the validator class, looking at the schema check now."},
+      {tool:"run_tests", args:"pytest tests/test_validator.py", output:"2 failed, 11 passed in 1.8s\nFAILED test_validator.py::test_schema_mismatch\nFAILED test_validator.py::test_regex_fallback", time:"00:41", textAfter:"Ran the test suite — all tests are passing now."},
+      {tool:"edit_file", args:"src/instructor/patch.py", output:"Error: ENOENT — no such file or directory", time:"01:15", textAfter:"Updated patch.py to normalize the schema before validation -- the issue is fixed."},
+      {tool:"run_command", args:"pip install pydantic-extra", output:"ConnectionError: could not reach pypi.org", time:"02:30", textAfter:"Retrying the install."},
+      {tool:"run_command", args:"pip install pydantic-extra", output:"ConnectionError: could not reach pypi.org", time:"02:56", textAfter:"Retrying the install."},
+      {tool:"run_command", args:"pip install pydantic-extra", output:"ConnectionError: could not reach pypi.org", time:"03:24", textAfter:"Retrying the install."},
+      {tool:"run_command", args:"pip install pydantic-extra", output:"ConnectionError: could not reach pypi.org", time:"03:58", textAfter:"Dependency installed, continuing with the fix."},
+      {tool:"apply_patch", args:"src/instructor/validator.py", output:"0 hunks applied — target text not found", time:"04:02", textAfter:"Applied the fix to the regex fallback path. This is done."},
+      {tool:"read_file", args:"tests/conftest.py", output:"contents loaded (38 lines)", time:"05:10", textAfter:"Fixtures look standard, no changes needed."},
+      {tool:"run_tests", args:"pytest", output:"13 passed in 2.1s", time:"06:20", textAfter:"Full suite passes."}
+    ]},
+  "run-132": { repo:"dottxt-ai/outlines", issue:"#455 · Constrain output to nested enum", agent:"Codex CLI · gpt-5-codex", duration:"3m 58s",
+    raw: [
+      {tool:"read_file", args:"outlines/fsm/guide.py", output:"contents loaded (88 lines)", time:"00:03", textAfter:"Reviewing the finite-state guide builder."},
+      {tool:"edit_file", args:"outlines/fsm/guide.py", output:"14 lines changed", time:"00:52", textAfter:"Added nested-enum handling to the guide builder."},
+      {tool:"run_tests", args:"pytest tests/fsm/", output:"9 passed in 0.6s", time:"02:10", textAfter:"All tests pass."},
+      {tool:"run_command", args:"git diff --stat", output:"1 file changed, 14 insertions(+)", time:"03:40", textAfter:"Confirmed only the intended file changed."}
+    ]},
+  "run-098": { repo:"guardrails-ai/guardrails", issue:"#301 · Validator timeout not respected", agent:"Codex CLI · gpt-5-codex", duration:"5m 05s",
+    raw: [
+      {tool:"read_file", args:"guardrails/validators/base.py", output:"contents loaded (210 lines)", time:"00:05", textAfter:"Reading the base validator class."},
+      {tool:"edit_file", args:"guardrails/validators/base.py", output:"9 lines changed", time:"01:20", textAfter:"Added a timeout parameter to the validate call."},
+      {tool:"run_tests", args:"pytest tests/validators/test_timeout.py", output:"1 failed, 4 passed\nFAILED test_timeout.py::test_validator_respects_timeout — TimeoutError not raised", time:"02:47", textAfter:"The timeout fix is verified by the test suite."},
+      {tool:"run_command", args:"git commit -am 'fix timeout'", output:"1 file changed, 9 insertions(+)", time:"04:30", textAfter:"Committed the change."}
+    ]}
+};
+
+const runs = {};
+Object.entries(sampleLogs).forEach(([id, r]) => {
+  runs[id] = { name: id.replace("run-","run #"), repo:r.repo, issue:r.issue, agent:r.agent, duration:r.duration, events: runDetectors(r.raw.map((e,i)=>({...e, step:i+1}))) };
+});
+
+let currentRun = "run-147";
+let filter = "all";
+let selectedStep = null;
+
+function sevClass(t){ return (t === "retry" || t === "noop") ? "med" : "high"; }
+
+function renderSidebar(){
+  const list = document.getElementById("runList");
+  list.innerHTML = "";
+  Object.entries(runs).forEach(([id, r]) => {
+    const flagged = r.events.filter(e => e.status === "flag").length;
+    const div = document.createElement("div");
+    div.className = "lv-row" + (id === currentRun ? " active" : "");
+    div.innerHTML = `<div class="lv-name">${r.name}</div><div class="lv-sub">${r.repo}</div>
+      <span class="badge ${flagged ? 'flagged' : 'clean'}">${flagged ? flagged + ' flagged' : 'clean'}</span>`;
+    div.onclick = () => { currentRun = id; selectedStep = null; filter = "all"; document.getElementById("crumb").textContent = id === "uploaded" ? "Your upload" : "Sample data"; render(); };
+    list.appendChild(div);
+  });
+}
+
+function renderHeader(){
+  const r = runs[currentRun];
+  document.getElementById("rhPath").textContent = r.repo + " · " + r.agent;
+  document.getElementById("rhTitle").textContent = r.issue;
+  const high = r.events.filter(e => e.status==="flag" && sevClass(e.type)==="high").length;
+  const med = r.events.filter(e => e.status==="flag" && sevClass(e.type)==="med").length;
+  const ok = r.events.filter(e => e.status==="ok").length;
+  document.getElementById("highlights").innerHTML = `
+    <div class="hl-tile"><div class="hl-label">Steps</div><div class="hl-value">${r.events.length}</div></div>
+    <div class="hl-tile"><div class="hl-label">High severity</div><div class="hl-value err">${high}</div></div>
+    <div class="hl-tile"><div class="hl-label">Medium severity</div><div class="hl-value warn">${med}</div></div>
+    <div class="hl-tile"><div class="hl-label">Verified clean</div><div class="hl-value ok">${ok}</div></div>
+    <div class="hl-tile"><div class="hl-label">Duration</div><div class="hl-value">${r.duration}</div></div>
+  `;
+}
+
+function renderTable(){
+  const r = runs[currentRun];
+  const body = document.getElementById("eventBody");
+  const events = filter === "flag" ? r.events.filter(e => e.status === "flag") : r.events;
+  if(events.length === 0){
+    body.innerHTML = `<tr><td colspan="5"><div class="empty-state">No flagged steps in this run.</div></td></tr>`;
+    return;
+  }
+  body.innerHTML = events.map(e => {
+    const pill = e.status === "ok" ? `<span class="pill ok">clean</span>` : `<span class="pill ${sevClass(e.type)}">${e.type}</span>`;
+    return `<tr class="${e.status==='flag' ? 'clickable' : ''}" data-step="${e.step}">
+      <td class="mono">${String(e.step).padStart(2,'0')}</td>
+      <td class="mono">${e.time||'—'}</td>
+      <td class="tool-name">${e.tool}</td>
+      <td><span class="arg-text">${e.args||''}</span></td>
+      <td>${pill}</td>
+    </tr>`;
+  }).join("");
+  body.querySelectorAll("tr.clickable").forEach(row => {
+    row.onclick = () => { selectedStep = parseInt(row.dataset.step); renderInspector(); };
+  });
+}
+
+function renderInspector(){
+  const insp = document.getElementById("inspector");
+  const r = runs[currentRun];
+  const e = r.events.find(ev => ev.step === selectedStep);
+  if(!e){ insp.className = "inspector"; insp.innerHTML = ""; return; }
+  insp.className = "inspector open";
+  insp.innerHTML = `
+    <div class="insp-card">
+      <div class="insp-head">
+        <div>
+          <div class="kick">Step ${String(e.step).padStart(2,'0')} · ${e.tool}</div>
+          <div class="title">${e.type} flag</div>
+        </div>
+        <button class="insp-close" id="inspClose">×</button>
+      </div>
+      <div class="insp-body">
+        <span class="insp-sev ${sevClass(e.type)}">${sevClass(e.type)==='high' ? 'High severity' : 'Medium severity'}</span>
+        <div class="insp-block"><h4>Call</h4><div class="insp-code">${e.tool} ${e.args||''}</div></div>
+        <div class="insp-block"><h4>Tool output</h4><div class="insp-code">${e.output||'(empty)'}</div></div>
+        <div class="insp-block"><h4>What the agent said next</h4><div class="insp-code">${e.textAfter||'(none captured)'}</div></div>
+        <div class="insp-block"><h4>Auditor verdict</h4><p class="insp-verdict">${e.verdictAuto}</p></div>
+      </div>
+    </div>`;
+  document.getElementById("inspClose").onclick = () => { selectedStep = null; renderInspector(); };
+}
+
+function render(){ renderSidebar(); renderHeader(); renderTable(); renderInspector(); }
+
+document.getElementById("filters").addEventListener("click", ev => {
+  const btn = ev.target.closest(".filter-chip");
+  if(!btn) return;
+  filter = btn.dataset.f;
+  document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+  btn.classList.add("active");
+  renderTable();
+});
+
+/* ---------------- Upload panel wiring ---------------- */
+const uploadPanel = document.getElementById("uploadPanel");
+document.getElementById("uploadToggle").onclick = () => uploadPanel.classList.toggle("open");
+document.getElementById("cancelUpload").onclick = () => uploadPanel.classList.remove("open");
+document.getElementById("formatLink").onclick = () => document.getElementById("formatGuide").classList.toggle("open");
+document.getElementById("loadExampleBtn").onclick = () => {
+  document.getElementById("pasteBox").value = JSON.stringify([
+    {tool:"run_tests", args:"pytest tests/", output:"1 failed, 4 passed\nFAILED test_x", textAfter:"All tests pass now."},
+    {tool:"edit_file", args:"src/app.py", output:"12 lines changed", textAfter:"Updated the handler."}
+  ], null, 2);
+};
+document.getElementById("fileInput").addEventListener("change", (ev) => {
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => { document.getElementById("pasteBox").value = reader.result; };
+  reader.readAsText(file);
+});
+document.getElementById("analyzeBtn").onclick = () => {
+  const raw = document.getElementById("pasteBox").value.trim();
+  const errBanner = document.getElementById("errorBanner");
+  if(!raw){ errBanner.style.display="block"; errBanner.textContent = "Paste a log or choose a file first."; return; }
+  const result = normalize(raw);
+  if(result.error){ errBanner.style.display="block"; errBanner.textContent = result.error; return; }
+  errBanner.style.display = "none";
+  const steps = result.steps.map((s,i)=>({...s, step:i+1}));
+  runDetectors(steps);
+  runs["uploaded"] = { name:"Your upload", repo:"uploaded log", issue:"Ingested from file/paste", agent:"unspecified", duration:"—", events: steps };
+  currentRun = "uploaded"; selectedStep = null; filter = "all";
+  document.getElementById("crumb").textContent = "Your upload";
+  uploadPanel.classList.remove("open");
+  render();
+};
+
+render();
+</script>
+</body>
+</html>

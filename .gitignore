@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Generated reports
+report.json
+*.report.json
+
+# Real session logs (don't accidentally commit real agent transcripts,
+# which may contain file paths, commands, or output from your own machine)
+rollout-*.jsonl
+!examples/*.jsonl
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python packaging
+*.egg-info/
+build/
+dist/

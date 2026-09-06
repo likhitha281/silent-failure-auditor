@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install package and dev dependencies
+        run: pip install -e ".[dev]"
+      - name: Run unit tests
+        run: pytest tests/ -v
+      - name: Smoke-test the standalone script
+        run: python run_baseline.py --input examples/sample_rollout.jsonl
+      - name: Smoke-test the installed CLI
+        run: sfa audit examples/sample_rollout.jsonl

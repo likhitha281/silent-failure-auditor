@@ -1,0 +1,44 @@
+name: 'Silent Failure Auditor'
+description: >
+  Audits an agent session log (Codex CLI, Claude Code, Aider, or a generic
+  tool-call format) for silent failures -- misread success, retry loops,
+  hallucinated paths, and no-op edits -- and fails the build if any are found.
+branding:
+  icon: 'shield'
+  color: 'red'
+
+inputs:
+  log-path:
+    description: 'Path to the agent session log to audit'
+    required: true
+  fail-on:
+    description: 'Minimum severity that should fail the build: "high", "medium", or "none"'
+    required: false
+    default: 'high'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Silent Failure Auditor
+      shell: bash
+      run: pip install "${{ github.action_path }}"
+
+    - name: Run audit
+      shell: bash
+      run: sfa audit "${{ inputs.log-path }}" --output sfa-report.json
+
+    - name: Enforce severity threshold
+      shell: bash
+      run: python "${{ github.action_path }}/scripts/check_severity.py" sfa-report.json "${{ inputs.fail-on }}"
+
+    - name: Upload full report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: sfa-report
+        path: sfa-report.json

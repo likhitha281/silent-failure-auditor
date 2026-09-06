@@ -1,0 +1,6 @@
+# run_baseline.py has no dependencies beyond the Python standard library.
+# This file only covers the optional Phase-2 script, llm_explain.py.
+anthropic>=0.40.0
+
+# For running the test suite
+pytest>=7.0.0
