@@ -50,7 +50,7 @@ pip install silent-failure-auditor[llm]     # + optional LLM confirmation pass
 
 Or from source:
 ```bash
-git clone https://github.com/<you>/silent-failure-auditor
+git clone https://github.com/likhitha281/silent-failure-auditor
 cd silent-failure-auditor
 pip install -e ".[llm,dev]"
 ```
