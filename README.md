@@ -96,7 +96,7 @@ high-severity silent failure — for example, gating a PR an agent opened
 against your repo:
 
 ```yaml
-- uses: <you>/silent-failure-auditor@main
+- uses: likhitha281/silent-failure-auditor@main
   with:
     log-path: agent-session.jsonl
     fail-on: high   # "high", "medium", or "none"
