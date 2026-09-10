@@ -7,6 +7,11 @@ branding:
   icon: 'shield'
   color: 'red'
 
+# Access this action needs: none. It only reads the log file you point it
+# at and writes a report to the job workspace -- no secrets, no network
+# calls beyond installing the package from PyPI, no write access to your
+# repository or any external service.
+
 inputs:
   log-path:
     description: 'Path to the agent session log to audit'
@@ -19,8 +24,27 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Validate inputs
+      shell: bash
+      run: |
+        case "${{ inputs.fail-on }}" in
+          high|medium|none) ;;
+          *)
+            echo "::error title=Silent Failure Auditor::Invalid fail-on value \"${{ inputs.fail-on }}\". Expected one of: high, medium, none."
+            exit 1
+            ;;
+        esac
+        if [ ! -f "${{ inputs.log-path }}" ]; then
+          echo "::error title=Silent Failure Auditor::log-path \"${{ inputs.log-path }}\" does not exist. Check the path is correct and that actions/checkout ran before this step."
+          exit 1
+        fi
+
+    # Pinned to a full commit SHA (not just a version tag) per GitHub's
+    # guidance for supply-chain security -- a tag can be moved, a commit
+    # SHA cannot. The trailing comment is only for humans; GitHub resolves
+    # the action by the SHA itself.
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: '3.11'
 
@@ -32,13 +56,21 @@ runs:
       shell: bash
       run: sfa audit "${{ inputs.log-path }}" --output sfa-report.json
 
+    - name: Write step summary
+      shell: bash
+      run: python "${{ github.action_path }}/scripts/write_summary.py" sfa-report.json
+
+    - name: Emit annotations for flagged steps
+      shell: bash
+      run: python "${{ github.action_path }}/scripts/emit_annotations.py" sfa-report.json
+
     - name: Enforce severity threshold
       shell: bash
       run: python "${{ github.action_path }}/scripts/check_severity.py" sfa-report.json "${{ inputs.fail-on }}"
 
     - name: Upload full report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: sfa-report
         path: sfa-report.json

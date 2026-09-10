@@ -1,0 +1,53 @@
+name: Action Integration Tests
+
+# Unlike ci.yml (which tests the Python package directly), this workflow
+# invokes the packaged GitHub Action itself -- `uses: ./` -- so it exercises
+# the full real pipeline a consumer of this Action actually experiences:
+# pip install -> sfa CLI -> report generation -> check_severity.py -> the
+# action's declared inputs/outputs. Unit tests can't catch a broken
+# action.yml, a bad input name, or a severity threshold that's silently
+# ignored -- this can.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  passes-on-clean-log:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the action on a clean log (expected to pass)
+        uses: ./
+        with:
+          log-path: examples/eval_set/handcrafted/clean_run.json
+          fail-on: high
+
+  fails-on-high-severity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the action on a flagged log (expected to FAIL)
+        id: audit
+        continue-on-error: true
+        uses: ./
+        with:
+          log-path: examples/sample_rollout.jsonl
+          fail-on: high
+      - name: Assert the action actually failed
+        run: |
+          if [ "${{ steps.audit.outcome }}" != "failure" ]; then
+            echo "Expected the action to fail on a high-severity log, but it reported: ${{ steps.audit.outcome }}"
+            exit 1
+          fi
+          echo "Confirmed: the action correctly failed the build on high-severity flags."
+
+  passes-when-fail-on-is-none:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the action with fail-on none (expected to pass despite flags)
+        uses: ./
+        with:
+          log-path: examples/sample_rollout.jsonl
+          fail-on: none

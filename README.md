@@ -103,14 +103,30 @@ high-severity silent failure — for example, gating a PR an agent opened
 against your repo:
 
 ```yaml
-- uses: <you>/silent-failure-auditor@main
+- uses: likhitha281/silent-failure-auditor@v0.1.0   # pin to a release, not @main
   with:
     log-path: agent-session.jsonl
     fail-on: high   # "high", "medium", or "none"
 ```
 
-The full report is uploaded as a build artifact either way, so you can
-inspect medium-severity flags even when the build passes.
+Findings show up in three places, not just a JSON file you'd have to
+download: a **step summary** in the workflow run UI (severity counts plus
+one paragraph per finding), **inline `::error`/`::warning` annotations** on
+the run itself, and the full per-step **`sfa-report` artifact** for anything
+that needs the raw data. `fail-on` and `log-path` are validated up front —
+an unrecognized severity or a missing log file fails fast with a clear
+message instead of a confusing error three steps later.
+
+**What this action needs access to:** nothing. No secrets, no write
+permissions, no network calls beyond installing the package from PyPI. It
+only reads the log file you point it at.
+
+**Supply-chain note for maintainers:** the two third-party actions this
+depends on (`setup-python`, `upload-artifact`) are pinned to full commit
+SHAs rather than version tags, since a tag can be moved but a commit can't.
+The `setup-python` pin was cross-checked against two independent sources;
+the `upload-artifact` pin came from one dependabot-generated diff — worth
+an independent `git ls-remote` check before bumping either.
 
 ## Dashboard
 
@@ -126,19 +142,27 @@ Open `dashboard.html` and try the "Upload log" panel with `examples/sample_rollo
 │   ├── detectors.py           # the four rule-based signatures
 │   ├── adapters.py            # format detection: codex / transcript / generic / aider
 │   └── cli.py                 # sfa audit / watch / explain
-├── action.yml                 # GitHub Action wrapper around the CLI
-├── scripts/check_severity.py  # severity gate used by the Action
+├── action.yml                  # GitHub Action wrapper around the CLI
+├── scripts/
+│   ├── check_severity.py      # severity gate used by the Action
+│   ├── write_summary.py        # writes findings to $GITHUB_STEP_SUMMARY
+│   └── emit_annotations.py     # writes ::error/::warning workflow commands
+├── .github/workflows/
+│   ├── test.yml                # unit tests against the Python package
+│   └── action-integration.yml  # invokes the packaged Action itself, end to end
 ├── dashboard.html              # browser-based visual auditor
 ├── examples/
 │   ├── sample_rollout.jsonl    # used to DESIGN the rules -- not for evaluation
 │   ├── sample_generic.json
 │   └── eval_set/                # held-out set, used to MEASURE the rules
 │       ├── labels.json
-│       └── *.json
+│       ├── codex/ claude/ aider/ generic/   # 130 generated logs
+│       └── handcrafted/          # 4 original hand-written cases
 ├── tests/
 │   ├── test_detectors.py      # course-baseline tests
 │   └── test_package.py        # adapter + CLI tests
 ├── run_baseline.py            # standalone script (course submission entry point)
+├── generate_eval_set.py        # builds examples/eval_set/ with known ground truth
 ├── evaluate.py                 # precision/recall against examples/eval_set
 ├── watch_live.py               # standalone script, same logic as `sfa watch`
 ├── llm_explain.py               # standalone script, same logic as `sfa explain`
@@ -159,7 +183,19 @@ pytest tests/ -v
 
 11 tests cover the four failure signatures, all four format adapters, and
 edge cases (an agent correctly acknowledging an error is *not* flagged; two
-repeats don't trigger the retry rule, three do). CI runs these on every push.
+repeats don't trigger the retry rule, three do). `test.yml` runs these on
+every push.
+
+These are unit tests against the Python package directly — they can't
+catch a broken `action.yml`, a wrong input name, or a severity threshold
+that's silently ignored. `action-integration.yml` covers that gap by
+invoking the packaged Action itself (`uses: ./`) exactly the way a real
+consumer would, in three scenarios: a clean log passes, a flagged log with
+`fail-on: high` is asserted to actually fail (using `continue-on-error`
+plus an explicit outcome check, since a job failing is the expected,
+correct result there), and the same flagged log with `fail-on: none`
+passes despite the flags. This is the difference between "the code works"
+and "the thing someone else drops into their CI works."
 
 ## Evaluation
 
