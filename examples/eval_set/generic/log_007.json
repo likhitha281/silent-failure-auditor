@@ -1,0 +1,38 @@
+[
+  {
+    "tool": "edit_file",
+    "args": "src/utils.py",
+    "output": "1 file changed, 8 insertions(+)",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_tests",
+    "args": "cargo test",
+    "output": "5 passed in 2.5s",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "edit_file",
+    "args": "lib/router.ts",
+    "output": "contents loaded (5 lines)",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded.",
+    "textAfter": "The command completed successfully after a retry."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/",
+    "output": "15 passed in 2.6s",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_tests",
+    "args": "cargo test",
+    "output": "12 passed in 2.0s",
+    "textAfter": "Reviewing the module before making changes."
+  }
+]

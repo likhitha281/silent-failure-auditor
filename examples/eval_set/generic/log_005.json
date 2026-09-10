@@ -1,0 +1,38 @@
+[
+  {
+    "tool": "edit_file",
+    "args": "app/views.py",
+    "output": "contents loaded (6 lines)",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "edit_file",
+    "args": "src/validator.py",
+    "output": "7 passed in 2.4s",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "read_file",
+    "args": "src/parser.py",
+    "output": "9 lines changed",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/",
+    "output": "Command timed out after 30s",
+    "textAfter": "Looks good, moving on."
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  }
+]

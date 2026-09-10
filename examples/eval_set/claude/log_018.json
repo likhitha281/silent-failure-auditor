@@ -1,0 +1,256 @@
+{
+  "messages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t0",
+          "name": "run_tests",
+          "input": {
+            "path_or_cmd": "npm test"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t0",
+          "content": "10 passed in 2.4s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Reviewing the module before making changes."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t1",
+          "name": "edit_file",
+          "input": {
+            "path_or_cmd": "lib/router.ts"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t1",
+          "content": "1 file changed, 5 insertions(+)"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t2",
+          "name": "run_tests",
+          "input": {
+            "path_or_cmd": "pytest tests/test_api.py"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t2",
+          "content": "18 passed in 2.3s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Confirmed the change matches the intended behavior."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t3",
+          "name": "read_file",
+          "input": {
+            "path_or_cmd": "src/parser.py"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t3",
+          "content": "8 passed in 0.8s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t4",
+          "name": "run_command",
+          "input": {
+            "path_or_cmd": "npm test"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t4",
+          "content": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "The command completed successfully after a retry."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t5",
+          "name": "read_file",
+          "input": {
+            "path_or_cmd": "src/validator.py"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t5",
+          "content": "contents loaded (2 lines)"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Confirmed the change matches the intended behavior."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t6",
+          "name": "run_command",
+          "input": {
+            "path_or_cmd": "cargo test"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t6",
+          "content": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "The command completed successfully after a retry."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t7",
+          "name": "run_command",
+          "input": {
+            "path_or_cmd": "pip install pydantic-extra"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t7",
+          "content": "ConnectionError: could not reach registry"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t8",
+          "name": "run_command",
+          "input": {
+            "path_or_cmd": "pip install pydantic-extra"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t8",
+          "content": "ConnectionError: could not reach registry"
+        }
+      ]
+    }
+  ]
+}

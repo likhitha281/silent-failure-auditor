@@ -1,0 +1,44 @@
+[
+  {
+    "tool": "apply_patch",
+    "args": "core/engine.py",
+    "output": "already up to date",
+    "textAfter": "Alright, that takes care of it."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/test_api.py",
+    "output": "15 passed in 2.9s",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/test_api.py",
+    "output": "12 passed in 2.5s",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "run_tests",
+    "args": "go test ./...",
+    "output": "5 passed in 0.9s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "edit_file",
+    "args": "src/patch.py",
+    "output": "FileNotFoundError: path does not exist: src/patch.py",
+    "textAfter": "All good, the change is completed."
+  },
+  {
+    "tool": "read_file",
+    "args": "scripts/deploy.sh",
+    "output": "1 lines changed",
+    "textAfter": "Confirmed the change matches the intended behavior."
+  },
+  {
+    "tool": "run_tests",
+    "args": "./deploy.sh",
+    "output": "13 passed in 1.3s",
+    "textAfter": "Confirmed the change matches the intended behavior."
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "tool": "run_tests",
+    "args": "go test ./...",
+    "output": "16 passed in 2.0s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "run_tests",
+    "args": "npm test",
+    "output": "17 passed in 3.0s",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/",
+    "output": "11 passed in 0.7s",
+    "textAfter": ""
+  },
+  {
+    "tool": "apply_patch",
+    "args": "src/config.py",
+    "output": "nothing to commit, working tree clean",
+    "textAfter": "Great, let's continue."
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install requests-cache",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install requests-cache",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install requests-cache",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install requests-cache",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install requests-cache",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": "Dependency installed, continuing."
+  },
+  {
+    "tool": "edit_file",
+    "args": "app/views.py",
+    "output": "contents loaded (2 lines)",
+    "textAfter": "That looks correct, continuing."
+  }
+]

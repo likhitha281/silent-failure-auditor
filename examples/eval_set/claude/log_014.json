@@ -1,0 +1,123 @@
+{
+  "messages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t0",
+          "name": "run_tests",
+          "input": {
+            "path_or_cmd": "go test ./..."
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t0",
+          "content": "15 passed in 1.8s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t1",
+          "name": "run_tests",
+          "input": {
+            "path_or_cmd": "pip install pydantic-extra"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t1",
+          "content": "16 passed in 1.0s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "That looks correct, continuing."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t2",
+          "name": "run_command",
+          "input": {
+            "path_or_cmd": "npm test"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t2",
+          "content": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "The command completed successfully after a retry."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "t3",
+          "name": "run_tests",
+          "input": {
+            "path_or_cmd": "go test ./..."
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "t3",
+          "content": "17 passed in 1.8s"
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Confirmed the change matches the intended behavior."
+        }
+      ]
+    }
+  ]
+}

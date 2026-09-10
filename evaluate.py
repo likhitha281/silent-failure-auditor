@@ -29,7 +29,8 @@ import json
 import sys
 from pathlib import Path
 
-from run_baseline import normalize, run_detectors
+from silent_failure_auditor.adapters import normalize
+from silent_failure_auditor.detectors import run_detectors
 
 
 def evaluate(logs_dir, labels_path):
@@ -37,6 +38,7 @@ def evaluate(logs_dir, labels_path):
 
     total_tp = total_fp = total_fn = total_tn = 0
     per_file_rows = []
+    per_bucket = {}  # bucket name -> [tp, fp, fn, tn]
 
     for filename, truth in labels.items():
         log_path = Path(logs_dir) / filename
@@ -44,8 +46,10 @@ def evaluate(logs_dir, labels_path):
             print(f"Warning: {filename} listed in labels but not found in {logs_dir}", file=sys.stderr)
             continue
 
+        bucket = filename.split("/")[0] if "/" in filename else "(root)"
+
         raw_text = log_path.read_text(encoding="utf-8")
-        steps, error = normalize(raw_text)
+        steps, fmt, error = normalize(raw_text)
         if error:
             print(f"Warning: could not parse {filename}: {error}", file=sys.stderr)
             continue
@@ -66,13 +70,24 @@ def evaluate(logs_dir, labels_path):
         total_tn += tn
         per_file_rows.append((filename, tp, fp, fn, tn))
 
-    precision = total_tp / (total_tp + total_fp) if (total_tp + total_fp) else float("nan")
-    recall = total_tp / (total_tp + total_fn) if (total_tp + total_fn) else float("nan")
-    f1 = (2 * precision * recall / (precision + recall)
-          if (precision + recall) and precision == precision and recall == recall else float("nan"))
+        b = per_bucket.setdefault(bucket, [0, 0, 0, 0])
+        b[0] += tp
+        b[1] += fp
+        b[2] += fn
+        b[3] += tn
+
+    def prf(tp, fp, fn):
+        p = tp / (tp + fp) if (tp + fp) else float("nan")
+        r = tp / (tp + fn) if (tp + fn) else float("nan")
+        f1 = 2 * p * r / (p + r) if (p == p and r == r and (p + r)) else float("nan")
+        return p, r, f1
+
+    precision, recall, f1 = prf(total_tp, total_fp, total_fn)
+    bucket_stats = {b: (*counts, *prf(counts[0], counts[1], counts[2])) for b, counts in per_bucket.items()}
 
     return {
         "per_file": per_file_rows,
+        "per_bucket": bucket_stats,
         "true_positives": total_tp, "false_positives": total_fp,
         "false_negatives": total_fn, "true_negatives": total_tn,
         "precision": precision, "recall": recall, "f1": f1,
@@ -83,21 +98,25 @@ def main():
     parser = argparse.ArgumentParser(description="Evaluate the detector against hand-labeled ground truth")
     parser.add_argument("--logs-dir", required=True, help="Directory containing the log files")
     parser.add_argument("--labels", required=True, help="Path to labels.json (ground truth)")
+    parser.add_argument("--per-file", action="store_true", help="Also print the per-file breakdown")
     args = parser.parse_args()
 
     result = evaluate(args.logs_dir, args.labels)
 
     print(f"\nEvaluation -- {len(result['per_file'])} log(s)")
-    print("-" * 60)
-    print(f"{'file':<30} {'TP':>4} {'FP':>4} {'FN':>4} {'TN':>4}")
-    for filename, tp, fp, fn, tn in result["per_file"]:
-        print(f"{filename:<30} {tp:>4} {fp:>4} {fn:>4} {tn:>4}")
-    print("-" * 60)
-    print(f"Precision: {result['precision']:.2f}")
-    print(f"Recall:    {result['recall']:.2f}")
-    print(f"F1:        {result['f1']:.2f}")
-    print(f"(TP={result['true_positives']}, FP={result['false_positives']}, "
-          f"FN={result['false_negatives']}, TN={result['true_negatives']})")
+    print("-" * 66)
+    print(f"{'bucket':<14} {'TP':>4} {'FP':>4} {'FN':>4} {'TN':>4}   {'P':>5} {'R':>5} {'F1':>5}")
+    for bucket, (tp, fp, fn, tn, p, r, f1) in sorted(result["per_bucket"].items()):
+        print(f"{bucket:<14} {tp:>4} {fp:>4} {fn:>4} {tn:>4}   {p:>5.2f} {r:>5.2f} {f1:>5.2f}")
+    print("-" * 66)
+    print(f"{'OVERALL':<14} {result['true_positives']:>4} {result['false_positives']:>4} "
+          f"{result['false_negatives']:>4} {result['true_negatives']:>4}   "
+          f"{result['precision']:>5.2f} {result['recall']:>5.2f} {result['f1']:>5.2f}")
+
+    if args.per_file:
+        print(f"\n{'file':<40} {'TP':>4} {'FP':>4} {'FN':>4} {'TN':>4}")
+        for filename, tp, fp, fn, tn in result["per_file"]:
+            print(f"{filename:<40} {tp:>4} {fp:>4} {fn:>4} {tn:>4}")
 
 
 if __name__ == "__main__":

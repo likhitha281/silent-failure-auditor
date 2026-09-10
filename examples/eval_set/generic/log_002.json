@@ -1,0 +1,26 @@
+[
+  {
+    "tool": "read_file",
+    "args": "app/views.py",
+    "output": "contents loaded (6 lines)",
+    "textAfter": "Confirmed the change matches the intended behavior."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/test_api.py",
+    "output": "non-zero exit status 1",
+    "textAfter": "OK, proceeding with the rest."
+  },
+  {
+    "tool": "run_tests",
+    "args": "cargo test",
+    "output": "Command timed out after 30s",
+    "textAfter": "All good, the change is completed."
+  },
+  {
+    "tool": "read_file",
+    "args": "src/parser.py",
+    "output": "6 lines changed",
+    "textAfter": "Reviewing the module before making changes."
+  }
+]

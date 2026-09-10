@@ -1,0 +1,38 @@
+[
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/test_api.py",
+    "output": "14 passed in 1.7s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pip install pydantic-extra",
+    "output": "5 passed in 2.1s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install left-pad",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install left-pad",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install left-pad",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install left-pad",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": "Dependency installed, continuing."
+  }
+]

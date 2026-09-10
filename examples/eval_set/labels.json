@@ -1,6 +1,1082 @@
 {
-  "clean_run.json": {},
-  "vocab_miss.json": {"1": true},
-  "transient_recovery.json": {"1": false},
-  "ghost_file.json": {"1": true}
+  "codex/log_000.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false,
+    "10": true
+  },
+  "codex/log_001.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": true,
+    "10": false
+  },
+  "codex/log_002.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "codex/log_003.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "codex/log_004.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_005.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true
+  },
+  "codex/log_006.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false
+  },
+  "codex/log_007.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true
+  },
+  "codex/log_008.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": false
+  },
+  "codex/log_009.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false
+  },
+  "codex/log_010.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_011.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false
+  },
+  "codex/log_012.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "codex/log_013.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_014.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_015.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true
+  },
+  "codex/log_016.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true
+  },
+  "codex/log_017.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+  },
+  "codex/log_018.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true
+  },
+  "codex/log_019.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_020.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "codex/log_021.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "codex/log_022.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": true
+  },
+  "codex/log_023.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "codex/log_024.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_025.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false,
+    "9": false,
+    "10": true,
+    "11": false
+  },
+  "codex/log_026.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "codex/log_027.jsonl": {
+    "1": false,
+    "2": false
+  },
+  "codex/log_028.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false
+  },
+  "codex/log_029.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": true
+  },
+  "codex/log_030.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "codex/log_031.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false
+  },
+  "codex/log_032.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "codex/log_033.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false
+  },
+  "codex/log_034.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false
+  },
+  "codex/log_035.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "codex/log_036.jsonl": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "codex/log_037.jsonl": {
+    "1": false,
+    "2": false,
+    "3": true
+  },
+  "codex/log_038.jsonl": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": true,
+    "8": false,
+    "9": false
+  },
+  "codex/log_039.jsonl": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false
+  },
+  "claude/log_000.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": true
+  },
+  "claude/log_001.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "claude/log_002.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "claude/log_003.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": true,
+    "8": false,
+    "9": false
+  },
+  "claude/log_004.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false,
+    "10": false
+  },
+  "claude/log_005.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": true,
+    "8": false,
+    "9": false,
+    "10": false
+  },
+  "claude/log_006.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false
+  },
+  "claude/log_007.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "claude/log_008.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false
+  },
+  "claude/log_009.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true
+  },
+  "claude/log_010.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "claude/log_011.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false
+  },
+  "claude/log_012.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false,
+    "10": false,
+    "11": true
+  },
+  "claude/log_013.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": false
+  },
+  "claude/log_014.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "claude/log_015.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "claude/log_016.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "claude/log_017.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "claude/log_018.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false
+  },
+  "claude/log_019.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "claude/log_020.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "claude/log_021.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "claude/log_022.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false
+  },
+  "claude/log_023.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false
+  },
+  "claude/log_024.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": false
+  },
+  "claude/log_025.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false
+  },
+  "claude/log_026.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true
+  },
+  "claude/log_027.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": true,
+    "9": false
+  },
+  "claude/log_028.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+  },
+  "claude/log_029.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false
+  },
+  "claude/log_030.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "claude/log_031.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": true,
+    "10": false
+  },
+  "claude/log_032.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": false,
+    "9": false
+  },
+  "claude/log_033.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false
+  },
+  "claude/log_034.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "claude/log_035.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false
+  },
+  "claude/log_036.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": true,
+    "9": true
+  },
+  "claude/log_037.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "claude/log_038.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "claude/log_039.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "aider/log_000.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": true
+  },
+  "aider/log_001.md": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false
+  },
+  "aider/log_002.md": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "aider/log_003.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+  },
+  "aider/log_004.md": {
+    "1": false,
+    "2": false
+  },
+  "aider/log_005.md": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true
+  },
+  "aider/log_006.md": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "aider/log_007.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true
+  },
+  "aider/log_008.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": false
+  },
+  "aider/log_009.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": false
+  },
+  "aider/log_010.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": true,
+    "6": false,
+    "7": false
+  },
+  "aider/log_011.md": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "aider/log_012.md": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "aider/log_013.md": {
+    "1": false,
+    "2": false
+  },
+  "aider/log_014.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false
+  },
+  "aider/log_015.md": {
+    "1": false,
+    "2": false,
+    "3": true
+  },
+  "aider/log_016.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false
+  },
+  "aider/log_017.md": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "aider/log_018.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": true
+  },
+  "aider/log_019.md": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "aider/log_020.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": true,
+    "8": true,
+    "9": false
+  },
+  "aider/log_021.md": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false,
+    "10": false,
+    "11": false
+  },
+  "aider/log_022.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false
+  },
+  "aider/log_023.md": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+  },
+  "aider/log_024.md": {
+    "1": false,
+    "2": false,
+    "3": false
+  },
+  "generic/log_000.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "generic/log_001.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false
+  },
+  "generic/log_002.json": {
+    "1": false,
+    "2": true,
+    "3": true,
+    "4": false
+  },
+  "generic/log_003.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "generic/log_004.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": true
+  },
+  "generic/log_005.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false
+  },
+  "generic/log_006.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false
+  },
+  "generic/log_007.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "generic/log_008.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false
+  },
+  "generic/log_009.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true
+  },
+  "generic/log_010.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "generic/log_011.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true,
+    "7": false,
+    "8": false,
+    "9": false
+  },
+  "generic/log_012.json": {
+    "1": true,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false
+  },
+  "generic/log_013.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "generic/log_014.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true,
+    "9": false
+  },
+  "generic/log_015.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": false
+  },
+  "generic/log_016.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false,
+    "5": false
+  },
+  "generic/log_017.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": true,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": true,
+    "10": false
+  },
+  "generic/log_018.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false
+  },
+  "generic/log_019.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": true,
+    "6": true,
+    "7": false,
+    "8": false
+  },
+  "generic/log_020.json": {
+    "1": false,
+    "2": false,
+    "3": true,
+    "4": false,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": true
+  },
+  "generic/log_021.json": {
+    "1": false,
+    "2": true,
+    "3": false,
+    "4": false
+  },
+  "generic/log_022.json": {
+    "1": false,
+    "2": false
+  },
+  "generic/log_023.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": true,
+    "5": false,
+    "6": false,
+    "7": false,
+    "8": false,
+    "9": true,
+    "10": false
+  },
+  "generic/log_024.json": {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false,
+    "6": true
+  },
+  "handcrafted/clean_run.json": {},
+  "handcrafted/vocab_miss.json": {
+    "1": true
+  },
+  "handcrafted/transient_recovery.json": {
+    "1": false
+  },
+  "handcrafted/ghost_file.json": {
+    "1": true
+  }
 }

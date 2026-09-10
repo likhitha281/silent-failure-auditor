@@ -1,0 +1,14 @@
+[
+  {
+    "tool": "edit_file",
+    "args": "lib/router.ts",
+    "output": "4 lines changed",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "read_file",
+    "args": "core/engine.py",
+    "output": "contents loaded (6 lines)",
+    "textAfter": "Reviewing the module before making changes."
+  }
+]

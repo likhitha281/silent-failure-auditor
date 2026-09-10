@@ -17,6 +17,13 @@ pip install silent-failure-auditor
 sfa audit my-session.jsonl
 ```
 
+> **No Codex CLI installation is required to reproduce these results.**
+> The baseline only *reads* a log file — a real Codex CLI export is one
+> supported format, but the bundled example
+> (`examples/sample_rollout.jsonl`) is already in that format, so the full
+> baseline runs with nothing beyond Python. Codex CLI itself is only
+> needed if you want to generate a *new* real session to audit.
+
 ## The four things it catches
 
 | Type | What it looks like | Severity |
@@ -50,7 +57,7 @@ pip install silent-failure-auditor[llm]     # + optional LLM confirmation pass
 
 Or from source:
 ```bash
-git clone https://github.com/likhitha281/silent-failure-auditor
+git clone https://github.com/<you>/silent-failure-auditor
 cd silent-failure-auditor
 pip install -e ".[llm,dev]"
 ```
@@ -96,7 +103,7 @@ high-severity silent failure — for example, gating a PR an agent opened
 against your repo:
 
 ```yaml
-- uses: likhitha281/silent-failure-auditor@main
+- uses: <you>/silent-failure-auditor@main
   with:
     log-path: agent-session.jsonl
     fail-on: high   # "high", "medium", or "none"
@@ -157,36 +164,57 @@ repeats don't trigger the retry rule, three do). CI runs these on every push.
 ## Evaluation
 
 ```bash
+python generate_eval_set.py --out examples/eval_set --codex 40 --claude 40 --aider 25 --generic 25
 python evaluate.py --logs-dir examples/eval_set --labels examples/eval_set/labels.json
 ```
 
-**Precision: 0.50 · Recall: 0.50 · F1: 0.50** — measured against a 4-log
-held-out set (`examples/eval_set/`), hand-labeled independently of the logs
-used to design the rules (`examples/sample_rollout.jsonl` was used *while
-building* the detector, so evaluating against it again would be circular —
-this set was written afterward, specifically to include cases the rules
-get wrong).
+**Overall: Precision 0.83 · Recall 0.60 · F1 0.70** — measured across 134
+generated logs (40 Codex, 40 Claude/Anthropic-transcript, 25 Aider, 25
+generic, plus 4 original hand-written cases), independent of the logs used
+to design the rules. Ground truth is known by construction: each log is
+generated with an explicit label for whether each step *should* be flagged,
+including deliberately hard cases (a real failure described in vocabulary
+the regex doesn't recognize — expected to be missed) and traps (something
+that looks like a failure but is a genuine in-call recovery — expected to
+cause a false positive). See `generate_eval_set.py` for exactly how each
+case is constructed.
 
-What that 0.50/0.50 is made of, concretely:
-- **True positive**: a hallucinated-path case in a different context
-  (`ghost_file.json`) — correctly caught.
-- **False negative** (`vocab_miss.json`): a real test failure where the
-  agent's follow-up ("Looks good, moving on") doesn't contain any of the
-  exact success words the regex checks for — missed.
-- **False positive** (`transient_recovery.json`): a command that failed,
-  retried, and *actually succeeded* within one tool output — the regex
-  sees "failed" + "completed successfully" and can't tell that's a
-  legitimate recovery, not a silent failure.
+By format:
 
-That false positive in particular points at the rule engine's real
-weakness: it judges each tool call as a single unit and can't distinguish
-"failed then recovered in the same call" from "failed and the agent didn't
-notice." A semantic pass (see `sfa explain` / `llm_explain.py`) is the
-planned fix.
+| Format | Precision | Recall | F1 | Notes |
+|---|---|---|---|---|
+| Codex rollout | 0.94 | 0.67 | 0.79 | Full output text available — all four signatures usable |
+| Claude/Anthropic transcript | 0.80 | 0.68 | 0.74 | Same as above |
+| Generic events | 0.74 | 0.72 | 0.73 | Same as above |
+| Aider markdown | 1.00 | 0.23 | 0.37 | See below |
 
-To grow this set: add a new log + its ground truth to `examples/eval_set/labels.json`
-whenever you run the auditor against a real session, so the number keeps
-being measured against fresh cases rather than the same four forever.
+**The Aider result is a real, structural finding, not noise.** Aider's
+chat-history transcript doesn't reliably expose a distinct tool-*output*
+field the way JSON-based tool-calling logs do — only the proposed edit and
+the surrounding prose. Three of the four signatures (misread success,
+hallucinated path, no-op edit) depend on inspecting that output, so they
+cannot fire on Aider logs by construction, regardless of rule quality. Only
+retry-loop detection survives, since it only needs repeated identical
+calls, not their output — which is exactly what the numbers show: 100%
+precision (it never guesses wrong on what little it can see) but recall
+capped well below the other formats. Fixing this would require parsing the
+prose *between* edit blocks for failure/success language directly, rather
+than treating it purely as the agent's after-the-fact claim.
+
+Across the other three formats, the main recall loss is the same
+vocabulary-brittleness pattern documented from the original 4-log set: a
+real failure described without the regex's specific success/failure words
+slips through. The main precision loss is the transient-recovery trap —
+a command that failed, retried, and genuinely succeeded within one call,
+which the rule can't distinguish from a silent failure since it judges
+each tool call as a single unit.
+
+To regenerate with different counts or a different seed, edit the
+`random.seed(...)` call or the `--codex/--claude/--aider/--generic` flags
+in `generate_eval_set.py`. To add real (not generated) logs to the set,
+drop them anywhere under `examples/eval_set/` and add their ground truth to
+`labels.json` by hand, the same way the original 4 hand-written cases are
+still included today.
 
 ## Limitations
 
@@ -196,8 +224,9 @@ being measured against fresh cases rather than the same four forever.
   building the test suite itself.
 - Rules are regex-based and not semantic; phrasing changes can defeat them.
   `sfa explain` (LLM confirmation pass) is the mitigation in progress.
-- The Aider adapter is best-effort — there's no official structured schema
-  to parse against.
+- The Aider adapter can only ever catch retry-loops (23% recall, measured):
+  Aider's transcript doesn't expose tool output, so the other three
+  signatures are structurally invisible to it, not just harder to detect.
 - `sfa watch` polls the session file every couple of seconds rather than
   true event streaming, since Codex CLI has no live socket/webhook.
 - No cross-session pattern learning; each run is audited independently.

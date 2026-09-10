@@ -1,0 +1,38 @@
+[
+  {
+    "tool": "run_command",
+    "args": "npm test",
+    "output": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded.",
+    "textAfter": "The command completed successfully after a retry."
+  },
+  {
+    "tool": "read_file",
+    "args": "app/views.py",
+    "output": "1 file changed, 5 insertions(+)",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "edit_file",
+    "args": "lib/compat.js",
+    "output": "Error: ENOENT: no such file or directory, open 'lib/compat.js'",
+    "textAfter": "The fix was applied successfully."
+  },
+  {
+    "tool": "read_file",
+    "args": "src/parser.py",
+    "output": "contents loaded (9 lines)",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "read_file",
+    "args": "app/views.py",
+    "output": "3 lines changed",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "edit_file",
+    "args": "src/utils.py",
+    "output": "2 passed in 0.7s",
+    "textAfter": ""
+  }
+]

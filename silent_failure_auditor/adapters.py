@@ -127,7 +127,11 @@ def normalize_codex_rollout(lines):
 
 
 def sniff_aider_markdown(raw_text):
-    return bool(AIDER_EDIT_BLOCK_RE.search(raw_text)) or "SEARCH/REPLACE" in raw_text
+    # A SEARCH/REPLACE block is the strongest signal, but a log with no
+    # edits at all (e.g. only read/test steps) won't have one -- the
+    # "#### " message-header convention is Aider's other distinctive marker.
+    return (bool(AIDER_EDIT_BLOCK_RE.search(raw_text)) or "SEARCH/REPLACE" in raw_text
+            or bool(re.search(r"^####\s", raw_text, re.MULTILINE)))
 
 
 def normalize_aider_markdown(raw_text):

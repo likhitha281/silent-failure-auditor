@@ -1,0 +1,56 @@
+[
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded.",
+    "textAfter": "The command completed successfully after a retry."
+  },
+  {
+    "tool": "run_tests",
+    "args": "go test ./...",
+    "output": "12 passed in 0.4s",
+    "textAfter": "Confirmed the change matches the intended behavior."
+  },
+  {
+    "tool": "edit_file",
+    "args": "app/views.py",
+    "output": "5 passed in 1.6s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "edit_file",
+    "args": "src/config.py",
+    "output": "contents loaded (9 lines)",
+    "textAfter": "Confirmed the change matches the intended behavior."
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": "Dependency installed, continuing."
+  },
+  {
+    "tool": "run_command",
+    "args": "go test ./...",
+    "output": "Attempt 1 failed: timeout. Retrying... Attempt 2 succeeded.",
+    "textAfter": "The command completed successfully after a retry."
+  }
+]

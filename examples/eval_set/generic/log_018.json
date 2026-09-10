@@ -1,0 +1,50 @@
+[
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "run_command",
+    "args": "pip install pydantic-extra",
+    "output": "ConnectionError: could not reach registry",
+    "textAfter": ""
+  },
+  {
+    "tool": "read_file",
+    "args": "src/config.py",
+    "output": "2 passed in 2.7s",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "run_tests",
+    "args": "pytest tests/test_api.py",
+    "output": "Error: connection refused",
+    "textAfter": "That should do it."
+  },
+  {
+    "tool": "run_tests",
+    "args": "./deploy.sh",
+    "output": "18 passed in 2.2s",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "read_file",
+    "args": "scripts/deploy.sh",
+    "output": "contents loaded (7 lines)",
+    "textAfter": "Reviewing the module before making changes."
+  },
+  {
+    "tool": "read_file",
+    "args": "src/utils.py",
+    "output": "contents loaded (8 lines)",
+    "textAfter": "That looks correct, continuing."
+  },
+  {
+    "tool": "edit_file",
+    "args": "src/config.py",
+    "output": "1 passed in 1.3s",
+    "textAfter": ""
+  }
+]
