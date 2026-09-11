@@ -21,6 +21,16 @@ inputs:
     required: false
     default: 'high'
 
+outputs:
+  findings:
+    description: 'Total number of flagged steps (high + medium severity)'
+  high-count:
+    description: 'Number of high severity findings'
+  medium-count:
+    description: 'Number of medium severity findings'
+  report-path:
+    description: 'Path to the full JSON report, for a later step to read directly'
+
 runs:
   using: 'composite'
   steps:
@@ -55,6 +65,10 @@ runs:
     - name: Run audit
       shell: bash
       run: sfa audit "${{ inputs.log-path }}" --output sfa-report.json
+
+    - name: Set outputs
+      shell: bash
+      run: python "${{ github.action_path }}/scripts/write_outputs.py" sfa-report.json
 
     - name: Write step summary
       shell: bash

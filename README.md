@@ -48,6 +48,28 @@ step sequence, so the same detector runs regardless of source:
 Adding a new tool means writing one adapter function — the detection rules
 and the CLI never need to change.
 
+## How this fits together
+
+The core product is one pipeline; everything else in this repo is an
+interface to it or a tool that supports it:
+
+```
+agent session  ->  normalized event stream  ->  detectors  ->  findings
+   (log file)          (adapters.py)          (detectors.py)
+```
+
+- **Core product**: the detection pipeline above (`silent_failure_auditor/`)
+- **Primary interfaces** — how you actually run it:
+  - the `sfa` CLI (`audit` / `watch` / `explain`)
+  - the GitHub Action, for gating CI on a real result
+- **Supporting tools** — useful, but not the product itself:
+  - the HTML dashboard, for visually inspecting one flagged run
+  - `sfa watch`, for tailing a session live instead of after the fact
+  - `sfa explain`, an optional LLM second opinion on rule-flagged steps
+
+If you only read one more section, make it "CLI" or "Use it in CI" below —
+the rest is detail on top of that same pipeline.
+
 ## Install
 
 ```bash
@@ -103,7 +125,7 @@ high-severity silent failure — for example, gating a PR an agent opened
 against your repo:
 
 ```yaml
-- uses: likhitha281/silent-failure-auditor@v0.1.0   # pin to a release, not @main
+- uses: likhitha281/silent-failure-auditor@v1
   with:
     log-path: agent-session.jsonl
     fail-on: high   # "high", "medium", or "none"
@@ -121,6 +143,22 @@ message instead of a confusing error three steps later.
 permissions, no network calls beyond installing the package from PyPI. It
 only reads the log file you point it at.
 
+**Outputs, for composing this into a larger workflow** — rather than only
+pass/fail, a later step can react to the actual counts:
+
+```yaml
+- id: audit
+  uses: likhitha281/silent-failure-auditor@v1
+  with:
+    log-path: session.jsonl
+    fail-on: none   # don't fail here -- let the next step decide
+- if: steps.audit.outputs.high-count != '0'
+  run: ./notify-security-team.sh
+```
+
+Available outputs: `findings` (high + medium count), `high-count`,
+`medium-count`, `report-path`.
+
 **Supply-chain note for maintainers:** the two third-party actions this
 depends on (`setup-python`, `upload-artifact`) are pinned to full commit
 SHAs rather than version tags, since a tag can be moved but a commit can't.
@@ -128,7 +166,23 @@ The `setup-python` pin was cross-checked against two independent sources;
 the `upload-artifact` pin came from one dependabot-generated diff — worth
 an independent `git ls-remote` check before bumping either.
 
-## Dashboard
+**Versioning:** this repo follows the convention GitHub recommends for
+Actions — tag actual releases with full semver (`v1.0.0`, `v1.1.0`, ...)
+and separately maintain a floating major-version tag (`v1`) that always
+points at the latest compatible release, so consumers can pin to `@v1` and
+get non-breaking updates automatically:
+
+```bash
+git tag v1.0.0
+git tag -f v1 v1.0.0        # create/move the floating major tag
+git push origin v1.0.0
+git push origin v1 --force  # floating tags are force-pushed on purpose
+```
+
+Repeat the `v1 -f` step on every subsequent `v1.x.y` release; only move to
+tagging `v2` (and a new floating `v2`) for a breaking change.
+
+## Dashboard (supporting tool)
 
 A companion single-file HTML dashboard visualizes a flagged run interactively
 — upload a log or paste JSON directly in the browser, no server required.

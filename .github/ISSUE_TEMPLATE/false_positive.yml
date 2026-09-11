@@ -1,0 +1,72 @@
+name: False positive / false negative report
+description: The auditor flagged something it shouldn't have, or missed something it should have caught.
+labels: ["false-positive", "detector"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. The goal is to turn this into a regression
+        test, so please include enough detail that the exact behavior can be
+        reproduced -- see `examples/eval_set/` for the kind of fixture this
+        usually becomes.
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      options:
+        - Codex CLI
+        - Claude Code
+        - Aider
+        - Other / generic
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What went wrong
+      options:
+        - False positive (flagged something that was actually fine)
+        - False negative (missed a real silent failure)
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+      description: What should have happened (e.g. "clean" or the correct finding type)
+      placeholder: e.g. clean -- the command failed once and then genuinely succeeded on retry
+    validations:
+      required: true
+
+  - type: textarea
+    id: detected
+    attributes:
+      label: Detected
+      description: What the auditor actually reported
+      placeholder: e.g. misread_success (high)
+    validations:
+      required: true
+
+  - type: textarea
+    id: log
+    attributes:
+      label: Sanitized log
+      description: >
+        The relevant excerpt of the session log, with any file paths,
+        commands, secrets, or proprietary code replaced with placeholders.
+        Please double-check this before submitting -- do not paste a raw,
+        unsanitized log.
+      render: json
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Optional -- anything that seems relevant but doesn't fit above.
+    validations:
+      required: false
