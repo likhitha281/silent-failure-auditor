@@ -1,6 +1,6 @@
 # Silent Failure Auditor
 
-**Catches when a coding agent silently fails and reports success anyway.**
+**Catches when a coding agent silently fails and reports success.**
 
 Coding agents narrate their own progress. Most of the time they're right —
 but when a tool call fails, the agent doesn't always say so. A test suite
